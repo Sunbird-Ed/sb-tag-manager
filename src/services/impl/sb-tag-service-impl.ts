@@ -32,5 +32,24 @@ export class SBTagServiceImpl implements SBTagService {
         return this.__tagSnapShot[prefix.toString()];
     }
 
-
+    appendTag(result: any, prefix: String, deep?: Boolean | undefined) {
+        if(result instanceof Object) {
+            let tagArray = Object.values(result);
+            let prefixTagArr = tagArray.map(i => prefix.toString() + i);
+            if(this.__tagSnapShot[prefix.toString()] != null) {
+                this.__tagSnapShot[prefix.toString()].push(prefixTagArr);
+            } else {
+                this.__tagSnapShot[prefix.toString()] = prefixTagArr;
+            }
+            this.calculateTags();
+        } else {
+            let tagToBePushed = prefix.toString()+result.toString();
+            if(this.__tagSnapShot[prefix.toString()] != null) {
+                this.__tagSnapShot[prefix.toString()].push(tagToBePushed);
+            } else {
+                this.__tagSnapShot[prefix.toString()] = new Array();
+                this.__tagSnapShot[prefix.toString()].push(tagToBePushed);
+            }
+        }
+    }
 }

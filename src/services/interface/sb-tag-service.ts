@@ -4,4 +4,5 @@ export interface SBTagService {
     removeAllTags();
     getAllTags();
     getTags(prefix:String);
+    appendTag(result:Object, prefix:String,deep?:Boolean);
 }
