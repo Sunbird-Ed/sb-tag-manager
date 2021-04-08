@@ -9,11 +9,11 @@ export class SBTagServiceImpl implements SBTagService {
     private __tagObj: any = new Object();
 
     pushTag(result: Object, prefix: String, deep?: Boolean | undefined) {
-        let tagArray = Object.values(result);
+        let linearArr = this.propertiesToArrayKeyValues(result);
+        let tagArray = Object.values(linearArr);
         let prefixTagArr = tagArray.map(i => prefix.toString() + i)
         this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
-        //this.__tagObj[prefix.toString()] = result;
-        Object.assign(this.__tagObj[prefix.toString()],result);
+        this.__tagObj[prefix.toString()] = result;
         this.calculateTags();
     }    
     removeTag(prefix: String) {
@@ -40,6 +40,9 @@ export class SBTagServiceImpl implements SBTagService {
     getTagAttributes() {
         return this.propertiesToArray(this.__tagObj);
     }
+    getTagAttributeValues() {
+        return this.propertiesToArrayKeyValues(this.__tagObj);
+    }
 
     appendTag(result: any, prefix: String, deep?: Boolean | undefined) {
         if(result instanceof Object) {
@@ -62,7 +65,7 @@ export class SBTagServiceImpl implements SBTagService {
         }
     }
 
-    propertiesToArray(obj: any) {
+    private propertiesToArray(obj: any) {
         const isObject = val =>
             typeof val === 'object' && !Array.isArray(val);
     
@@ -83,4 +86,20 @@ export class SBTagServiceImpl implements SBTagService {
         return paths(obj);
     }
 
+    private propertiesToArrayKeyValues(obj: any, prefix?) {
+
+        var res = {};
+    
+        for (var k of Object.keys(obj)) {
+            var val = obj[k],
+                key = prefix ? prefix + '.' + k : k;
+    
+            if (typeof val === 'object')
+                Object.assign(res, this.propertiesToArrayKeyValues(val, key)); // <-- recursion
+            else
+                res[key] = val;
+        }
+    
+        return res;
+    }
 }

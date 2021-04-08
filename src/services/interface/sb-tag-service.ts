@@ -6,4 +6,5 @@ export interface SBTagService {
     getTags(prefix:String);
     appendTag(result:Object, prefix:String,deep?:Boolean);
     getTagAttributes();
+    getTagAttributeValues();
 }
