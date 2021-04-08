@@ -9,7 +9,8 @@ export class SBTagServiceImpl implements SBTagService {
     private __tagObj: any = new Object();
 
     pushTag(result: Object, prefix: String, deep?: Boolean | undefined) {
-        let tagArray = Object.values(result);
+        let linearArr = this.propertiesToArrayKeyValues(result);
+        let tagArray = Object.values(linearArr);
         let prefixTagArr = tagArray.map(i => prefix.toString() + i)
         this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
         this.__tagObj[prefix.toString()] = result;
