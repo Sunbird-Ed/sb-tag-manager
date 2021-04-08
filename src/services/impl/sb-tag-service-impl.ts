@@ -12,7 +12,7 @@ export class SBTagServiceImpl implements SBTagService {
         let tagArray = Object.values(result);
         let prefixTagArr = tagArray.map(i => prefix.toString() + i)
         this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
-        Object.assign(this.__tagObj[prefix.toString()],result);
+        this.__tagObj[prefix.toString()],result;
         this.calculateTags();
     }    
     removeTag(prefix: String) {
