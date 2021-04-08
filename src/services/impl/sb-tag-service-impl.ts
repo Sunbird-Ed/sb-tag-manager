@@ -6,19 +6,24 @@ export class SBTagServiceImpl implements SBTagService {
 
     private __tagSnapShot:any = new Object();
     private __tagList: any = new Array();
+    private __tagObj: any = new Object();
 
     pushTag(result: Object, prefix: String, deep?: Boolean | undefined) {
         let tagArray = Object.values(result);
         let prefixTagArr = tagArray.map(i => prefix.toString() + i)
         this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
+        //this.__tagObj[prefix.toString()] = result;
+        Object.assign(this.__tagObj[prefix.toString()],result);
         this.calculateTags();
     }    
     removeTag(prefix: String) {
         this.__tagSnapShot[prefix.toString()] = null;
+        this.__tagObj[prefix.toString()] = null;
         this.calculateTags();
     }
     removeAllTags() {
         this.__tagSnapShot = new Object();
+        this.__tagObj = new Object();
         this.calculateTags();
     }
     getAllTags() {
@@ -30,6 +35,10 @@ export class SBTagServiceImpl implements SBTagService {
     }
     getTags(prefix: String) {
         return this.__tagSnapShot[prefix.toString()];
+    }
+
+    getTagAttributes() {
+        return this.propertiesToArray(this.__tagObj);
     }
 
     appendTag(result: any, prefix: String, deep?: Boolean | undefined) {
@@ -52,4 +61,26 @@ export class SBTagServiceImpl implements SBTagService {
             }
         }
     }
+
+    propertiesToArray(obj: any) {
+        const isObject = val =>
+            typeof val === 'object' && !Array.isArray(val);
+    
+        const addDelimiter = (a, b) =>
+            a ? `${a}.${b}` : b;
+    
+        const paths = (obj = {}, head = '') => {
+            return Object.entries(obj)
+                .reduce((product, [key, value]) => 
+                    {
+                        let fullPath = addDelimiter(head, key)
+                        return isObject(value) ?
+                            product.concat(paths(value, fullPath))
+                        : product.concat(fullPath)
+                    }, []);
+        }
+    
+        return paths(obj);
+    }
+
 }

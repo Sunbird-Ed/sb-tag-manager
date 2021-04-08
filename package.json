@@ -1,6 +1,6 @@
 {
   "name": "sb-tag-manager",
-  "version": "3.9.5",
+  "version": "3.9.7",
   "description": "Tag Manager for Clients to Edge Compute based on Criteria",
   "main": "dist/index.js",
   "module": "src/index.ts",
