@@ -49,6 +49,7 @@ export class SBTagServiceImpl implements SBTagService {
             let linearArr = this.propertiesToArrayKeyValues(result);
             let tagArray = Object.values(linearArr);
             let prefixTagArr = tagArray.map(i => prefix.toString() + i);
+            this.__tagObj[prefix.toString()] = result;
             if(this.__tagSnapShot[prefix.toString()] != null) {
                 this.__tagSnapShot[prefix.toString()].concat(prefixTagArr);
             } else {
