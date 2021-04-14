@@ -46,10 +46,12 @@ export class SBTagServiceImpl implements SBTagService {
 
     appendTag(result: any, prefix: String, deep?: Boolean | undefined) {
         if(result instanceof Object) {
-            let tagArray = Object.values(result);
+            let linearArr = this.propertiesToArrayKeyValues(result);
+            let tagArray = Object.values(linearArr);
             let prefixTagArr = tagArray.map(i => prefix.toString() + i);
+            this.__tagObj[prefix.toString()] = result;
             if(this.__tagSnapShot[prefix.toString()] != null) {
-                this.__tagSnapShot[prefix.toString()].push(prefixTagArr);
+                this.__tagSnapShot[prefix.toString()].concat(prefixTagArr);
             } else {
                 this.__tagSnapShot[prefix.toString()] = prefixTagArr;
             }
