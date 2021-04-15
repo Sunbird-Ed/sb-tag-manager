@@ -7,15 +7,20 @@ export class SBTagServiceImpl implements SBTagService {
     private __tagSnapShot:any = new Object();
     private __tagList: any = new Array();
     private __tagObj: any = new Object();
+    private __tagSecondaryIndex = 0;
 
-    pushTag(result: Object, prefix: String, deep?: Boolean | undefined) {
-        let linearArr = this.propertiesToArrayKeyValues(result);
-        let tagArray = Object.values(linearArr);
-        let prefixTagArr = tagArray.map(i => prefix.toString() + i)
-        this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
-        this.__tagObj[prefix.toString()] = result;
-        this.calculateTags();
-    }    
+    restoreTags(jsonString: string) {
+        let resultObject:Object = JSON.parse(jsonString);
+        if(resultObject.hasOwnProperty("__tagObj") && resultObject.hasOwnProperty("__tagSnapShot")
+            && resultObject.hasOwnProperty("__tagList")) {
+                this.__tagObj = resultObject['__tagObj'];
+                this.__tagSnapShot = resultObject['__tagSnapShot'];
+                this.__tagList = resultObject['__tagList'];
+                this.calculateTags();
+        }
+        
+    }
+ 
     removeTag(prefix: String) {
         this.__tagSnapShot[prefix.toString()] = null;
         this.__tagObj[prefix.toString()] = null;
@@ -44,20 +49,50 @@ export class SBTagServiceImpl implements SBTagService {
         return this.propertiesToArrayKeyValues(this.__tagObj);
     }
 
+    pushTag(result: Object, prefix: String, deep?: Boolean | undefined) {
+       /* let linearArr = this.propertiesToArrayKeyValues(result);
+        let tagArray = Object.values(linearArr);
+        let prefixTagArr = tagArray.map(i => prefix.toString() + i)
+        this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
+        this.__tagObj[prefix.toString()] = result;
+        this.calculateTags();*/
+        this.appendTag(result,prefix,deep);
+    }   
+
     appendTag(result: any, prefix: String, deep?: Boolean | undefined) {
-        if(result instanceof Object) {
+        console.log("Input Result"+result);
+        if(result instanceof Object && !Array.isArray(result)) {
             let linearArr = this.propertiesToArrayKeyValues(result);
             let tagArray = Object.values(linearArr);
+            console.log(tagArray);
             let prefixTagArr = tagArray.map(i => prefix.toString() + i);
-            this.__tagObj[prefix.toString()] = result;
+            
             if(this.__tagSnapShot[prefix.toString()] != null) {
-                this.__tagSnapShot[prefix.toString()].concat(prefixTagArr);
+                let resultantArray = this.__tagSnapShot[prefix.toString()].concat(prefixTagArr);
+                this.__tagSnapShot[prefix.toString()] = resultantArray;
+                Object.assign(this.__tagObj[prefix.toString()],result);
             } else {
                 this.__tagSnapShot[prefix.toString()] = prefixTagArr;
+                this.__tagObj[prefix.toString()] = result;
             }
-            this.calculateTags();
+        } else if (Array.isArray(result)) {
+            let tagsToBePushed = result;
+            if(this.__tagSnapShot[prefix.toString()] != null) {
+                let tagArray = Object.values(tagsToBePushed);
+                let prefixTagArr = tagArray.map(i => prefix.toString() + i);
+                let resultArray = this.__tagSnapShot[prefix.toString()].concat(prefixTagArr);
+                this.__tagSnapShot[prefix.toString()] = resultArray;
+                this.__tagObj[prefix.toString()]["attr_"+this.__tagSecondaryIndex++] = tagsToBePushed;
+            } else {
+                this.__tagSnapShot[prefix.toString()] = new Array();
+                let prefixTagArr = tagsToBePushed.map(i => prefix.toString() + i);
+                let resultArray = this.__tagSnapShot[prefix.toString()].concat(prefixTagArr);
+                this.__tagSnapShot[prefix.toString()] = resultArray;
+                this.__tagObj[prefix.toString()]["attr_"+this.__tagSecondaryIndex++] = tagsToBePushed;
+            }
         } else {
             let tagToBePushed = prefix.toString()+result.toString();
+            this.__tagObj[prefix.toString()][tagToBePushed] = tagToBePushed;
             if(this.__tagSnapShot[prefix.toString()] != null) {
                 this.__tagSnapShot[prefix.toString()].push(tagToBePushed);
             } else {
@@ -65,6 +100,7 @@ export class SBTagServiceImpl implements SBTagService {
                 this.__tagSnapShot[prefix.toString()].push(tagToBePushed);
             }
         }
+        this.calculateTags();
     }
 
     private propertiesToArray(obj: any) {
