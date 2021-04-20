@@ -2,6 +2,8 @@ import { Container } from 'inversify';
 import { SBTagService } from './services/interface/sb-tag-service';
 import { InjectionTokens } from '../injection-tokens';
 import { SBTagServiceImpl } from './services/impl/sb-tag-service-impl';
+import { SBActionCriteriaService } from './services/interface/sb-action-criteria-service';
+import { SBActionCriteriaServiceImpl } from './services/impl/sb-action-criteria-serviceImpl';
 
 export class SBTagModule {
     private _container: Container;
@@ -27,12 +29,18 @@ export class SBTagModule {
         return this._container.get<SBTagService>(InjectionTokens.services.SB_TAG_SERVICE);
     }
 
+    get SBActionCriteriaService(): SBActionCriteriaService {
+        return this._container.get<SBActionCriteriaService>(InjectionTokens.services.SB_ACTION_CRITERIA_SERVICE);
+    }
+
     updateConfig() {
         const mode: 'rebind' | 'bind' = this._isInitialised ? 'rebind' : 'bind';
 
         this._container[mode]<SBTagService>(InjectionTokens.services.SB_TAG_SERVICE).
             to(SBTagServiceImpl).inSingletonScope();
 
+        this._container[mode]<SBActionCriteriaService>(InjectionTokens.services.SB_ACTION_CRITERIA_SERVICE).
+            to(SBActionCriteriaServiceImpl).inSingletonScope();
         if (mode === 'rebind' && this.onUpdateConfigCallback) {
             this.onUpdateConfigCallback();
         }
