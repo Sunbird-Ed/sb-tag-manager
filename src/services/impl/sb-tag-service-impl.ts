@@ -49,14 +49,17 @@ export class SBTagServiceImpl implements SBTagService {
         return this.propertiesToArrayKeyValues(this.__tagObj);
     }
 
-    pushTag(result: Object, prefix: String, deep?: Boolean | undefined) {
-       /* let linearArr = this.propertiesToArrayKeyValues(result);
-        let tagArray = Object.values(linearArr);
-        let prefixTagArr = tagArray.map(i => prefix.toString() + i)
-        this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
-        this.__tagObj[prefix.toString()] = result;
-        this.calculateTags();*/
-        this.appendTag(result,prefix,deep);
+    pushTag(result: Object, prefix: String, replace?: Boolean | undefined) {
+        if(replace) {
+            let linearArr = this.propertiesToArrayKeyValues(result);
+            let tagArray = Object.values(linearArr);
+            let prefixTagArr = tagArray.map(i => prefix.toString() + i)
+            this.__tagSnapShot[prefix.toString()] = prefixTagArr; 
+            this.__tagObj[prefix.toString()] = result;
+            this.calculateTags();
+        } else {
+            this.appendTag(result,prefix);
+        }
     }   
 
     appendTag(result: any, prefix: String, deep?: Boolean | undefined) {
@@ -127,17 +130,17 @@ export class SBTagServiceImpl implements SBTagService {
     private propertiesToArrayKeyValues(obj: any, prefix?) {
 
         var res = {};
+        if(obj != null) {
+            for (var k of Object.keys(obj)) {
+                var val = obj[k],
+                    key = prefix ? prefix + '.' + k : k;
     
-        for (var k of Object.keys(obj)) {
-            var val = obj[k],
-                key = prefix ? prefix + '.' + k : k;
-    
-            if (typeof val === 'object')
-                Object.assign(res, this.propertiesToArrayKeyValues(val, key)); // <-- recursion
-            else
-                res[key] = val;
+                if (typeof val === 'object')
+                    Object.assign(res, this.propertiesToArrayKeyValues(val, key)); // <-- recursion
+                else
+                    res[key] = val;
+            }
         }
-    
         return res;
     }
 }
