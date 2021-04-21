@@ -1,6 +1,6 @@
 {
   "name": "sb-tag-manager",
-  "version": "3.9.18",
+  "version": "3.9.19",
   "description": "Tag Manager for Clients to Edge Compute based on Criteria",
   "main": "dist/index.js",
   "module": "src/index.ts",
@@ -36,10 +36,10 @@
   "devDependencies": {
     "@types/jest": "^25.1.1",
     "jest": "^25.1.0",
-    "rxjs": "^6.5.3",
+    "rxjs": "^6.6.7",
     "ts-jest": "^25.2.0",
-    "tslint": "^5.12.0",
     "ts-loader": "^5.4.5",
+    "tslint": "^5.12.0",
     "typescript": "2.9.1",
     "uglifyjs-webpack-plugin": "^2.1.1",
     "webpack": "^4.41.5",

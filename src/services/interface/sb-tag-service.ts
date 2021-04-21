@@ -7,4 +7,5 @@ export interface SBTagService {
     appendTag(result:Object, prefix:String,deep?:Boolean);
     getTagAttributes();
     getTagAttributeValues();
+    restoreTags(jsonString:string);
 }
