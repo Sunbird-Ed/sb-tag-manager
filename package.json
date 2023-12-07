@@ -1,6 +1,7 @@
 {
   "name": "sb-tag-manager",
-  "version": "3.9.19",
+  "version": "3.9.20",
+  "license": "MIT",
   "description": "Tag Manager for Clients to Edge Compute based on Criteria",
   "main": "dist/index.js",
   "module": "src/index.ts",
