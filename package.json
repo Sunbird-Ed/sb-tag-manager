@@ -12,12 +12,14 @@
     "test:coverage": "jest --coverage --collectCoverageFrom=src/**/*.{ts,tsx} --coverageReporters=lcov",
     "test:ci": "jest --silent --ci --w 2 --collectCoverage=true --collectCoverageFrom=src/**/*.{ts,tsx} --coverageReporters=lcov",
     "test:ci-json": "jest --ci --w 2 --collectCoverage=true --coverageReporters=json",
-    "copy": " cp README.md dist/ && cp ./*.json dist/",
+    "copy": "cp README.md dist/ && find . -maxdepth 1 -name '*.json' ! -name 'package-lock.json' -exec cp {} dist/ \\;",
     "build": "rm -rf dist && NODE_ENV=production webpack --verbose true --progress true --cache false && npm run copy",
     "build:prod": "rm -rf dist && NODE_ENV=production webpack --verbose true --progress true --cache false && cp ./package.json ./LICENSE ./README.md ./dist",
     "build:analyze": "webpack --verbose true --progress true --cache false --profile --json > stats.json && npx webpack-bundle-analyzer ./stats.json",
     "build:dev": "rm -rf tmp && mkdir tmp && cp ./package-dev.json ./tmp/package.json && tsc -w --outDir ./tmp",
-    "sonar-scanner": "sonar-scanner"
+    "sonar-scanner": "sonar-scanner",
+    "lint": "tslint -c tslint.json 'src/**/*.ts'",
+    "lint:fix": "tslint -c tslint.json 'src/**/*.ts' --fix"
   },
   "dependencies": {
     "inversify": "^5.0.1",
